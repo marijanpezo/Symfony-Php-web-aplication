@@ -11,12 +11,19 @@
     
     <div>
         {% if bike.image %}
-                <a href="/products/{{ bike.id }}"><img src="/images/{{ bike.image }}" alt=""/>
+                <a href="/products/{{ bike.id }}"><img src="/images/{{ bike.image }}" alt=""></a>
         {% endif %}
     </div>
     <div>
         <h1>{{ bike.name }}</h1>
-        <p>${{ bike.price }}</p>           
+        <p>${{ bike.price }}</p>   
+        <form method="post">
+            {% if inBasket %}
+                <button disabled> Added to a busket</button>
+            {% else %}
+                <button>Add to busket</button>
+            {% endif %}
+        </form>        
     </div>
 </div>
 
