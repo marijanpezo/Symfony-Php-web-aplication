@@ -37,6 +37,24 @@ class CheckoutController extends AbstractController{
                 ->add('save', SubmitType::class, ['label' => 'Confirm order'])
                 ->getForm();
 
+
+        $form -> handleRequest($request);
+
+        if($form -> isSubmitted() && $form -> isValid()) {
+            $order = $form -> getData();
+
+            foreach ($basket as $product) {
+                $order -> getProducts() -> add($repo -> find($product -> getId()));
+            }
+
+            $entityManager = $this -> getDoctrine() -> getManager();
+            $entityManager -> persist($order);
+            $entityManager -> flush();
+
+            $session -> set('basket', []);
+
+            return $this->render("confirmation.html.twig");
+        }
         
         return $this->render("checkout.html.twig", [
             'total' => $total,

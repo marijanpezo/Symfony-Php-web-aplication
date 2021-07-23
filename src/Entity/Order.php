@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table{"orders"}
+ * @ORM\Table("orders")
  */
 class Order
 {
@@ -85,7 +85,7 @@ class Order
         return $this;
     }
 
-    public function getProducts(): ?string
+    public function getProducts()
     {
         return $this->products;
     }
