@@ -15,15 +15,16 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 use App\Entity\Order;
 use App\Repository\ProductRepository;
-
-
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 
 class CheckoutController extends AbstractController{
 
     /**
      * @Route("/checkout") 
      */
-    public function checkout( Request $request, ProductRepository $repo, SessionInterface $session): Response {
+    public function checkout( Request $request, ProductRepository $repo, SessionInterface $session, MailerInterface $mailer): Response {
         
         $basket = $session->get('basket', []);
         $total = array_sum(array_map(function($product){ return $product->getPrice(); }, $basket));
@@ -51,6 +52,8 @@ class CheckoutController extends AbstractController{
             $entityManager -> persist($order);
             $entityManager -> flush();
 
+           // $this->sendEmailConfirmation($order, $mailer);
+
             $session -> set('basket', []);
 
             return $this->render("confirmation.html.twig");
@@ -61,5 +64,16 @@ class CheckoutController extends AbstractController{
             'form' => $form->createView()
             
         ]);
+    }
+
+    private function sendEmailConfirmation(Order $order, MailerInterface $mailer){
+        $email = (new TemplatedEmail())
+                ->from('marijanpezo@gmail.com')
+                ->to(new Address($order->getEmail(), $order->getName()))
+                ->subject('Order confimation')
+                ->htmlTemplate('emails/order.html.twig')
+                ->context(['order' => $order]);
+
+        $mailer -> send($email);
     }
 }
