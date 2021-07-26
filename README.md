@@ -4,6 +4,7 @@ Symfony Php web shop application
 PHP
 Symfony
 Twig
+XAMPP
 SCSS
 HTML
 Composer
